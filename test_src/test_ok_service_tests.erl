@@ -4,7 +4,7 @@
 %%% 
 %%% Created : 10 dec 2012
 %%% -------------------------------------------------------------------
--module(adder_service_tests). 
+-module(test_ok_service_tests). 
    
 %% --------------------------------------------------------------------
 %% Include files
@@ -27,55 +27,40 @@
 %% Description: List of test cases 
 %% Returns: non
 %% --------------------------------------------------------------------
-cases_test()->
-    [clean_start(),
-     eunit_start(),
-     ?assertEqual(3,adder_service:add(1,2)),
-     % Add funtional test cases 
-     % cleanup and stop eunit 
-     clean_stop(),
-     eunit_stop()].
+start()->
+    spawn(fun()->eunit:test({timeout,2*60,test_ok_service}) end).
 
+
+cases_test()->
+    ?debugMsg("Test system setup"),
+    setup(),
+    ?debugMsg("add calls"),    
+    add_service(),
+    ?debugMsg("Start stop_test_system:start"),
+    cleanup(),
+    ok.
 
 %% --------------------------------------------------------------------
 %% Function:start/0 
 %% Description: Initiate the eunit tests, set upp needed processes etc
 %% Returns: non
 %% --------------------------------------------------------------------
-start()->
-    spawn(fun()->eunit:test({timeout,10,adder_service}) end).
-
-
-
-clean_start()->
-   ok.
-
-
-eunit_start()->
-    [start_service(adder_service),
-     check_started_service(adder_service)].
-
-
-
-clean_stop()->
+setup()->
+    ?assertEqual(ok,application:start(test_ok_service)),
+    Node=node(),
+    ?assertEqual({pong,Node,test_ok_service},test_ok_service:ping()),    
+    ?assertEqual(ok,application:stop(test_ok_service)),  
     ok.
 
-eunit_stop()->
-    [stop_service(adder_service),
-     timer:sleep(1000),
-     init:stop()].
+
+cleanup()->
+    init:stop().
 
 %% --------------------------------------------------------------------
-%% Function:support functions
-%% Description: Stop eunit tests, set upp needed processes etc
+%% Function:start/0 
+%% Description: Initiate the eunit tests, set upp needed processes etc
 %% Returns: non
 %% --------------------------------------------------------------------
-
-start_service(Service)->
-    ?assertEqual(ok,application:start(Service)).
-check_started_service(Service)->
-    ?assertMatch({pong,_,Service},Service:ping()).
-stop_service(Service)->
-    ?assertEqual(ok,application:stop(Service)),
-    ?assertEqual(ok,application:unload(Service)).
-
+add_service()->
+    ?assertEqual(42,adder:add(20,22)),
+    ok.

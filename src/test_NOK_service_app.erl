@@ -1,7 +1,7 @@
 %% Author: uabjle
 %% Created: 10 dec 2012
 %% Description: TODO: Add description to application_org
--module(adder_service_app).
+-module(test_NOK_service_app).
 
 -behaviour(application).
 %% --------------------------------------------------------------------
@@ -44,9 +44,8 @@
 %%          {error, Reason}
 %% --------------------------------------------------------------------
 start(_Type, _StartArgs) ->
-   % {ok,Pid}= adder_service_sup:start_link(),
-   % {ok,Pid}.
-    adder_service_sup:start_link().
+    {ok,Pid}= test_ok_service_sup:start_link(),
+    {ok,Pid}.
 %% --------------------------------------------------------------------
 %% Func: stop/1
 %% Returns: any

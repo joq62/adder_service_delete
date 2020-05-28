@@ -4,8 +4,8 @@
 %%%
 %%% Created : 10 dec 2012
 %%% -------------------------------------------------------------------
--module(adder_service_sup).
-
+-module(test_NOK_service_sup).
+ 
 -behaviour(supervisor).
 %% --------------------------------------------------------------------
 %% Include files
@@ -51,7 +51,7 @@ start_link()->
 %% --------------------------------------------------------------------
 init([]) ->
     {ok,{{one_for_one,5,10}, 
-	 [?CHILD(adder_service,worker)]}}.
+	 [?CHILD(test_ok_service,worker)]}}.
 
 %% ====================================================================
 %% Internal functions

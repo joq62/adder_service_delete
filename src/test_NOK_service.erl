@@ -4,7 +4,7 @@
 %%%  
 %%% Created : 10 dec 2012
 %%% -------------------------------------------------------------------
--module(adder_service). 
+-module(test_NOK_service). 
 
 -behaviour(gen_server).
 %% --------------------------------------------------------------------
@@ -32,8 +32,7 @@
 -export([start/0,
 	 stop/0,
 	 ping/0,
-	 get_state/0,
-	 heart_beat/1
+	 get_state/0
 	]).
 
 %% gen_server callbacks
@@ -66,8 +65,7 @@ get_state()->
 
 
 %%-----------------------------------------------------------------------
-heart_beat(Interval)->
-    gen_server:cast(?MODULE, {heart_beat,Interval}).
+
 
 
 %% ====================================================================
@@ -96,6 +94,8 @@ init([]) ->
 %%          {stop, Reason, State}            (aterminate/2 is called)
 %% --------------------------------------------------------------------
 handle_call({ping}, _From, State) ->
+
+    compiler_error
     Reply={pong,node(),?MODULE},
     {reply, Reply, State};
 
@@ -122,10 +122,6 @@ handle_call(Request, From, State) ->
 %%          {noreply, State, Timeout} |
 %%          {stop, Reason, State}            (terminate/2 is called)
 %% --------------------------------------------------------------------
-handle_cast({heart_beat,_Interval}, State) ->
-    ok,  
-    {noreply, State};
-
 handle_cast(Msg, State) ->
     io:format("unmatched match cast ~p~n",[{?MODULE,?LINE,Msg}]),
     {noreply, State}.
@@ -166,9 +162,6 @@ code_change(_OldVsn, State, _Extra) ->
 %% Description:
 %% Returns: non
 %% --------------------------------------------------------------------
-h_beat(Interval)->
-    timer:sleep(Interval),
-    rpc:cast(node(),?MODULE,heart_beat,[Interval]).
 
 %% --------------------------------------------------------------------
 %% Internal functions
